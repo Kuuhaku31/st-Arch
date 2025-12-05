@@ -39,6 +39,8 @@ umount /mnt
 
 # 正式挂载
 # 挂载根目录
+# -t btrfs 指定文件系统类型为 btrfs
+# -o 指定挂载选项
 # subvol=@ 指定挂载 @ 子卷
 mount -t btrfs -o compress=zstd,subvol=@ /dev/sda2 /mnt                   # 挂载根子卷
 mount --mkdir -t btrfs -o compress=zstd,subvol=@home /dev/sda2 /mnt/home  # 挂载 home 子卷
@@ -361,6 +363,42 @@ p10k configure
 # 修改配置文件 ~/.p10k.zsh，根据个人喜好调整外观
 # 应用配置
 source ~/.p10k.zsh
+
+
+# 命令自动上色（语法高亮）
+# 安装 zsh-syntax-highlighting 插件
+sudo pacman -S zsh-syntax-highlighting
+# 编辑 ~/.zshrc 在末尾添加以下内容以启用语法高亮
+# source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# 立即生效
+source ~/.zshrc
+
+
+# 给常用命令起别名
+# 编辑 ~/.zshrc
+#
+# alias ll='ls -la'
+#
+
+# 查看所有别名
+alias
+# 查看某个别名的具体命令
+alias ll
+
+# 让 Zsh 的历史记录自动去重（输入相同命令时只保留最新的一条，旧的自动删除）
+# ~/.zshrc
+#
+# # =========================
+# # 历史记录去重（保留最新）
+# # =========================
+# setopt HIST_IGNORE_ALL_DUPS      # 输入命令时，如果历史中有旧的，立即删除旧的
+# setopt HIST_SAVE_NO_DUPS         # 保存到文件时不写重复条目
+# setopt HIST_IGNORE_DUPS          # 连续重复时不写重复（可选）
+# setopt HIST_FIND_NO_DUPS         # 搜索历史时不显示重复（可选）
+#
+
+# 立即生效
+source ~/.zshrc
 ```
 
 # 创建、管理用户
@@ -381,4 +419,46 @@ su - jElee
 # 找到以下行并取消注释
 # %wheel ALL=(ALL) ALL
 
+```
+
+# 在 Windows 资源管理器中远程访问 Arch Linux 文件系统
+
+用 Samba 共享，需要启动的服务：
+
+1. smb 服务：管理 SAMBA 服务器共享什么目录、文件、打印机
+2. nmb 服务：管理群组和 netbios name 解析
+
+```bash
+# 安装 Samba
+pacman -S samba
+# 配置 /etc/samba/smb.conf
+# 加入你要共享的目录，例如共享 home：
+#
+# [global]
+#    workgroup = WORKGROUP
+#    server string = Arch Samba Server
+#    security = user
+#    map to guest = Bad User
+#
+# [home]
+#    path = /home/你的用户名
+#    read only = no
+#    browsable = yes
+#
+# 说明:
+# [home] = 共享名（Windows 里会显示为这个）
+# path = 共享的实际路径
+# read only = no -> 允许写入
+
+# 为 Samba 设置登录用户密码
+smbpasswd -a Username
+# 启用
+smbpasswd -e Username
+# 禁用
+smbpasswd -d Username
+# 删除 Samba 用户
+smbpasswd -x Username
+
+# 启动并设置开机自启 Samba 服务
+systemctl enable --now smb nmb
 ```
