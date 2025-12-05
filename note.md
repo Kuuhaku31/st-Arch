@@ -16,7 +16,8 @@ lsblk -pf
 cfdisk /dev/sda
 
 # 格式化分区
-mkfs.vfat -F32 /dev/sda1      # EFI 分区即启动分区
+# -F32 指定 FAT32 文件系统
+mkfs.vfat -F32 /dev/sda1      # EFI 分区 (启动分区)
 mkfs.btrfs /dev/sda2          # 根分区，用 btrfs 文件系统
 
 # 创建 btrfs 分区的子卷
@@ -49,6 +50,9 @@ mount --mkdir /dev/sda1 /mnt/boot                                         # 挂�
 
 # 查看挂载情况
 df -h
+
+# 查看 fstab 文件内容
+cat /etc/fstab
 ```
 
 # 更新系统
@@ -204,6 +208,8 @@ systemctl enable --now avahi-daemon
 # 配置系统
 
 ```bash
+sudo pacman -Syu
+
 # 安装 fastfetch lolcat cmatrix
 # fastfetch -> 系统信息显示工具
 # lolcat -> 彩虹文字显示工具
@@ -219,8 +225,15 @@ pacman -S fastfetch lolcat q
 # gnome-software -> GNOME 软件管理器
 # flatpak -> 应用程序打包和分发系统
 pacman -S gnome-desktop gdm ghostty gnome-control-center gnome-software flatpak
-# 这步还未执行 2025-12-03
 
+# 启动并设置开机自启 GDM 服务
+systemctl enable --now gdm
+# 关闭图形界面登录
+systemctl disable --now gdm
+# 单次关闭
+systemctl stop gdm
+
+# 安装字体
 ```
 
 # 配置宿主机代理
@@ -419,6 +432,9 @@ su - jElee
 # 找到以下行并取消注释
 # %wheel ALL=(ALL) ALL
 
+# 列出所有用户
+cat /etc/passwd
+
 ```
 
 # 在 Windows 资源管理器中远程访问 Arch Linux 文件系统
@@ -461,4 +477,26 @@ smbpasswd -x Username
 
 # 启动并设置开机自启 Samba 服务
 systemctl enable --now smb nmb
+systemctl restart smb nmb
+
+# 查看 Samba 服务状态
+systemctl status smb nmb
+```
+
+# VMware 虚拟机相关工具
+
+```bash
+# https://wiki.archlinuxcn.org/wiki/VMware/%E5%AE%89%E8%A3%85_Arch_Linux_%E4%B8%BA%E8%99%9A%E6%8B%9F%E6%9C%BA
+# 终端复制粘贴支持
+# 这些功能与 gtkmm3 有着未指明的依赖关系，并会导致这些功能静默失败
+# 安装依赖
+pacman -S open-vm-tools gtkmm3
+```
+
+# NVIDIA 显卡驱动安装
+
+```bash
+# 安装头文件
+pacman -S linux-headers
+# ...
 ```
