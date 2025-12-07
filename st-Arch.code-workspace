@@ -5,6 +5,9 @@
   },
   {
     "path": "A:/"
+  },
+  {
+    "path": "../../Virtual Machines/Arch-Aris"
   }],
   "settings":
   {}

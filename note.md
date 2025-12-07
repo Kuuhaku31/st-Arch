@@ -216,7 +216,9 @@ sudo pacman -Syu
 # cmatrix -> 矩阵雨屏幕特效
 pacman -S fastfetch lolcat q
 
-# 这步还未执行 2025-12-03
+# 安装 htop 交互式进程查看器
+pacman -S htop
+
 # 安装组件
 # gnome-desktop -> GNOME 桌面环境基础组件
 # gdm -> GNOME 显示管理器
@@ -224,7 +226,15 @@ pacman -S fastfetch lolcat q
 # gnome-control-center -> GNOME 控制中心
 # gnome-software -> GNOME 软件管理器
 # flatpak -> 应用程序打包和分发系统
-pacman -S gnome-desktop gdm ghostty gnome-control-center gnome-software flatpak
+# xdg-desktop-portal-gnome -> GNOME 桌面门户服务
+pacman -S gnome-desktop gdm ghostty gnome-control-center gnome-software flatpak xdg-desktop-portal-gnome
+
+# 安装密码和密钥管理相关组件
+# gnome-keyring -> GNOME 密钥环，用于存储密码和密钥
+# libsecret -> 用于访问密码和密钥的库
+sudo pacman -S gnome-keyring libsecret
+# 启动并设置开机自启 GNOME Keyring 服务
+systemctl --user enable --now gnome-keyring-daemon.service
 
 # 启动并设置开机自启 GDM 服务
 systemctl enable --now gdm
@@ -233,7 +243,36 @@ systemctl disable --now gdm
 # 单次关闭
 systemctl stop gdm
 
+# 安装 Xorg 相关组件
+sudo pacman -S xorg-server xorg-apps xorg-xinit
+# 对于 GNOME on Xorg 会话，在 ~/.xinitrc 中添加
+# export XDG_SESSION_TYPE=x11
+# export GDK_BACKEND=x11
+# exec gnome-session
+
+# 删除不需要的软件包
+pacman -Rns xorg-server xorg-apps xorg-xinit
+
 # 安装字体
+pacman -S ttf-sarasa-gothic # 思源黑体
+pacman -S noto-fonts-emoji # 谷歌 Noto Emoji 字体
+# MesloLGS Nerd Font
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
+fc-cache -fv
+
+```
+
+# 通过 pacman 安装桌面软件
+
+```bash
+# 安装 Firefox 浏览器
+sudo pacman -S firefox
+
 ```
 
 # 配置宿主机代理
@@ -324,6 +363,9 @@ chmod +x /etc/profile.d/proxy.sh
 
 # 立即生效
 source /etc/profile.d/proxy.sh
+
+# 测试连接
+curl -I https://www.google.com
 ```
 
 # 彩色终端
@@ -491,6 +533,13 @@ systemctl status smb nmb
 # 这些功能与 gtkmm3 有着未指明的依赖关系，并会导致这些功能静默失败
 # 安装依赖
 pacman -S open-vm-tools gtkmm3
+# 加载 vmware 相关内核模块
+# 编辑 /etc/mkinitcpio.conf 文件
+# MODULES=(... vmw_balloon vmw_pvscsi vsock vmw_vsock_vmci_transport ...)
+# 启动并设置开机自启 open-vm-tools 服务
+# vmtoolsd -> VMware Tools 守护进程
+# vmware-vmblock-fuse -> 允许主机和虚拟机之间的文件拖放和复制粘贴功能
+systemctl enable --now vmtoolsd vmware-vmblock-fuse
 ```
 
 # NVIDIA 显卡驱动安装
@@ -499,4 +548,32 @@ pacman -S open-vm-tools gtkmm3
 # 安装头文件
 pacman -S linux-headers
 # ...
+```
+
+# 修改文件权限
+
+```bash
+# 修改文件或目录的所有者
+# chown (Change Owner): 改变文件或目录的所有者
+chown 用户名:用户组 文件或目录路径
+```
+
+# Yay - AUR 助手
+
+Yay 是一个流行的 AUR 助手，用于简化从 Arch User Repository (AUR) 安装和管理软件包的过程
+
+```bash
+# 安装 Yay
+# 安装依赖
+pacman -S git base-devel
+# 克隆 Yay 仓库
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+# 安装完成后，可以使用 yay 命令来安装 AUR 软件包
+# 使用 Yay 安装 AUR 软件包
+yay -S 包名
+
+# 例如，安装 Google Chrome 浏览器
+yay -S google-chrome
 ```
