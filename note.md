@@ -275,12 +275,30 @@ fc-cache -fv
 
 ```
 
-# 通过 pacman 安装桌面软件
+## 通过 pacman 安装桌面软件
 
 ```bash
 # 安装 Firefox 浏览器
 sudo pacman -S firefox
 
+```
+
+## 安装中文输入法
+
+```bash
+# https://github.com/SHORiN-KiWATA/ShorinArchExperience-ArchlinuxGuide/wiki/%E4%B8%AD%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95
+
+# fcitx5-im -> 包含了fcitx5的基本包
+# fcitx5-chinese-addons -> 包含了多种中文输入法引擎和相关插件
+# fcitx5-mozc -> Google日文输入法的fcitx5
+pacman -S fcitx5-im fcitx5-chinese-addons fcitx5-mozc
+
+# 配置环境变量
+# 编辑 /etc/environment 文件
+# 添加以下内容:
+GTK_IM_MODULE=fcitx     # 设置 GTK 应用程序使用 fcitx 输入法框架
+QT_IM_MODULE=fcitx      # 设置 Qt 应用程序使用 fcitx 输入法框架
+XMODIFIERS=@im=fcitx    # 设置 X 应用程序使用 fcitx 输入法框架
 ```
 
 # 配置宿主机代理
