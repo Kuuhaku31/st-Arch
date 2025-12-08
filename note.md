@@ -4,7 +4,11 @@
 
 主机密码: pi141592
 
-root 管理员(JELEE)密码: pi141592j
+root 管理员(JELEE)密码:
+
+pi141592j
+
+pi141592pass
 
 # 硬盘分区
 
@@ -576,4 +580,95 @@ yay -S 包名
 
 # 例如，安装 Google Chrome 浏览器
 yay -S google-chrome
+```
+
+# Docker 安装与配置
+
+```bash
+# 安装 Docker
+pacman -S docker
+# 启动并设置开机自启 Docker 服务
+systemctl enable --now docker
+# 或者在第一次启动Docker时启动
+systemctl enable --now docker.socket
+
+# 给 Docker Daemon 配置代理
+# 编辑 /etc/systemd/system/docker.service.d/http-proxy.conf 文件
+[Service]
+Environment="HTTP_PROXY=http://192.168.11.1:10811"
+Environment="HTTPS_PROXY=http://192.168.11.1:10811"
+Environment="ALL_PROXY=socks5://192.168.11.1:10810"
+Environment="NO_PROXY=localhost,127.0.0.1,::1"
+
+# 重新加载 systemd 配置
+systemctl daemon-reload
+# 重启 Docker 服务使配置生效
+systemctl restart docker
+# 查看 Docker 服务状态
+docker info
+
+# 测试 Docker 是否安装成功
+docker run -it --rm archlinux bash -c "echo hello world"
+
+
+# 安装 Docker Desktop
+# 下载 Docker Desktop for Linux 包
+# -q -> 静默模式，不显示下载进度
+# -O- -> 将下载内容输出到标准输出（屏幕）
+# tar -> 解压 tar 包
+# x -> 解压
+# v -> 显示解压过程
+# f -> 使用文件（file），此处的 - 表示从标准输入中读取压缩包内容
+# z -> 处理 gzip 压缩格式
+# docker/docker -> 指定 tar 解压时从包内路径 docker/docker 开始解压，docker 目录内的内容会被提取出来。
+# --strip-components=1 -> 表示去掉解压后路径的第一部分目录结构。即如果压缩包内部有 docker/docker，解压后只保留 docker 文件，不保留它的父目录。
+wget https://download.docker.com/linux/static/stable/x86_64/docker-29.1.2.tgz -qO- | tar xvfz - docker/docker --strip-components=1
+# -r -> 递归复制目录及其内容
+# -p -> 保留文件属性（权限、时间戳等）
+sudo cp -rp ./docker /usr/local/bin/ && rm -r ./docker
+# 安装
+# -U -> 升级或安装本地包
+sudo pacman -U ./docker-desktop-x86_64.pkg.tar.zst
+
+# 安装 AppIndicator 扩展（系统托盘图标支持）
+pacman -S gnome-shell-extension-appindicator
+
+# 卸载 Docker Desktop
+sudo pacman -Rns docker-desktop
+# 删除残留文件
+sudo rm -rf ~/.docker/desktop
+
+
+# 关于 Docker Desktop 和 Docker Engine
+# 二者独立
+# https://docs.docker.com/desktop/setup/install/linux/#general-system-requirements
+# 查看计算机上可用的上下文
+docker context ls
+# 切换到 Docker Desktop 上下文
+docker context use docker-desktop
+```
+
+# 启用 KVM 硬件虚拟化
+
+```bash
+# 检查 KVM 硬件支持
+LC_ALL=C.UTF-8 lscpu | grep Virtualization
+# 检查内核中是否已包含必要的模块（kvm 以及 kvm_amd 和 kvm_intel 中的一个）
+zgrep CONFIG_KVM /proc/config.gz
+# 确认这些内核模块已自动加载
+lsmod | grep kvm
+```
+
+# 安装 pass 一个密码管理工具
+
+```bash
+# 安装 pass
+pacman -S pass
+# 设置 GPG 密钥
+gpg --full-generate-key
+
+# 查看密钥
+gpg --list-secret-keys
+# 初始化密码存储库
+pass init < GPG-KEY-ID >
 ```

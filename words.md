@@ -10,3 +10,4 @@
 | UEFI     | Unified Extensible Firmware Interface | 统一可扩展固件接口 | 一种现代计算机固件接口，替代传统 BIOS               |
 | BIOS     | Basic Input/Output System             | 基本输入输出系统   | 计算机启动时初始化硬件并加载操作系统的固件接口      |
 | GRUB     | GRand Unified Bootloader              | 大统一引导加载程序 | 一种多操作系统引导加载程序，支持多种文件系统和内核  |
+| KVM      | Kernel-based Virtual Machine          | 基于内核的虚拟机   | Linux 内核模块，实现硬件虚拟化功能                  |
