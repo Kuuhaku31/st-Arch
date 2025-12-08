@@ -260,6 +260,10 @@ pacman -Rns xorg-server xorg-apps xorg-xinit
 # 安装字体
 pacman -S ttf-sarasa-gothic # 思源黑体
 pacman -S noto-fonts-emoji # 谷歌 Noto Emoji 字体
+
+# Noto CJK 字体（支持中日韩字符）
+pacman -S noto-fonts-cjk
+
 # MesloLGS Nerd Font
 mkdir -p ~/.local/share/fonts
 cd ~/.local/share/fonts
@@ -381,6 +385,8 @@ curl -I https://www.google.com
 3. Powerlevel10k: 一个功能强大且高度可定制的 oh-my-zsh 主题，提供了丰富的信息显示和美观的外观
 
 ```bash
+# https://www.haoyep.com/posts/zsh-config-oh-my-zsh/
+
 # 使用 zsh + oh-my-zsh（更漂亮的提示符）
 pacman -S zsh       # 安装 zsh
 chsh -s /bin/zsh    # 修改默认 shell 为 zsh
@@ -426,19 +432,20 @@ source ~/.p10k.zsh
 
 # 命令自动上色（语法高亮）
 # 安装 zsh-syntax-highlighting 插件
-sudo pacman -S zsh-syntax-highlighting
-# 编辑 ~/.zshrc 在末尾添加以下内容以启用语法高亮
-# source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# 立即生效
-source ~/.zshrc
+# 克隆 zsh-syntax-highlighting 仓库到 oh-my-zsh 的自定义插件目录下
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# 编辑 ~/.zshrc
+# 添加 plugins=( [plugins...] zsh-syntax-highlighting)
+
+# 命令提示插件，当你输入命令时，会自动推测你可能需要输入的命令，按下右键可以快速采用建议
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# 编辑 ~/.zshrc
+# 添加 plugins=( [plugins...] zsh-autosuggestions)
 
 
 # 给常用命令起别名
 # 编辑 ~/.zshrc
-#
 # alias ll='ls -la'
-#
-
 # 查看所有别名
 alias
 # 查看某个别名的具体命令
@@ -458,6 +465,11 @@ alias ll
 
 # 立即生效
 source ~/.zshrc
+
+
+# Ghostty 终端配置
+# 配置文件路径: ~/.config/ghostty/config
+# 按下 ctrl+shift+, 立即刷新
 ```
 
 # 创建、管理用户
@@ -481,6 +493,8 @@ su - jElee
 # 列出所有用户
 cat /etc/passwd
 
+# 查看用户组
+groups 用户名
 ```
 
 # 在 Windows 资源管理器中远程访问 Arch Linux 文件系统
@@ -582,7 +596,9 @@ yay -S 包名
 yay -S google-chrome
 ```
 
-# Docker 安装与配置
+# Docker
+
+## 安装 Docker Engine 并配置代理
 
 ```bash
 # 安装 Docker
@@ -638,14 +654,35 @@ sudo pacman -Rns docker-desktop
 # 删除残留文件
 sudo rm -rf ~/.docker/desktop
 
+```
 
-# 关于 Docker Desktop 和 Docker Engine
+## 关于 Docker Desktop 和 Docker Engine
+
+```bash
+
 # 二者独立
 # https://docs.docker.com/desktop/setup/install/linux/#general-system-requirements
 # 查看计算机上可用的上下文
 docker context ls
 # 切换到 Docker Desktop 上下文
 docker context use docker-desktop
+```
+
+## 以非 root 用户身份管理 Docker
+
+可以让 vsudo 插件访问 Docker，而不需要每次都使用 sudo 提升权限
+
+```bash
+# 创建 docker 群组
+groupadd docker
+# 将当前用户添加到 docker 组
+# -a -> 追加用户到组
+# -G -> 指定组
+usermod -aG docker $USER
+# 激活对组的更改
+newgrp docker
+# 验证
+docker run hello-world
 ```
 
 # 启用 KVM 硬件虚拟化
