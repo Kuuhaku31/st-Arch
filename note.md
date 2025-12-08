@@ -709,3 +709,45 @@ gpg --list-secret-keys
 # 初始化密码存储库
 pass init < GPG-KEY-ID >
 ```
+
+# 开发工具
+
+## Python
+
+```bash
+# pyenv -> Python 虚拟环境管理工具
+pacman -S pyenv
+# 编辑 ~/.zshrc 添加以下内容以配置 pyenv 环境变量
+export PATH="$HOME/.pyenv/bin:$PATH"    # 将 pyenv 可执行文件路径添加到 PATH 环境变量
+eval "$(pyenv init --path)"             # 初始化 pyenv 环境变量
+
+# 安装 Python 3.11
+pyenv install 3.11.9
+# 设置全局 Python 版本
+pyenv global 3.11.9
+# 列出已安装的 Python 版本
+pyenv versions
+# 查看当前 Python 版本
+pyenv version
+```
+
+## Java
+
+```bash
+# jenv -> Java 版本管理工具
+pacman -S jenv
+# 编辑 ~/.zshrc 添加以下内容以配置 jenv 环境变量
+export PATH="$HOME/.jenv/bin:$PATH"    # 将 jenv 可执行文件路径添加到 PATH 环境变量
+eval "$(jenv init -)"                  # 初始化 jenv 环境变量
+
+# 下载 JDK 25
+pacman -S jdk25-openjdk
+# 将 JDK 25 添加到 jenv 管理
+jenv add /usr/lib/jvm/java-25-openjdk
+# 设置全局 Java 版本
+jenv global 25
+# 列出已添加的 Java 版本
+jenv versions
+# 查看当前 Java 版本
+jenv version
+```
