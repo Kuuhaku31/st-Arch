@@ -769,3 +769,9 @@ jenv versions
 # 查看当前 Java 版本
 jenv version
 ```
+
+# Joplin
+
+```bash
+yay -S joplin-desktop
+```
