@@ -18,6 +18,8 @@
 | EFI   | Extensible Firmware Interface         | 现代计算机的固件接口       |
 | UEFI  | Unified Extensible Firmware Interface | EFI 的升级版               |
 | ESP   | EFI System Partition                  | EFI 系统分区               |
+| WM    | Window Manager                        | 窗口管理器                 |
+| TTY   | Teletype                              | 终端仿真器                 |
 
 ## 参考资料
 
